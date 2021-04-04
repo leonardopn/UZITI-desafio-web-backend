@@ -12,7 +12,7 @@ function getConnection() {
                 password: process.env.SQL_PASS,
                 database: process.env.SQL_DB_NAME
             });
-
+            console.log("pediu");
             pool.getConnection().then(conn => {
                 resolve({ status: "OK", payload: conn });
             }).catch(err => {
