@@ -9,7 +9,7 @@ export function getProducts() {
 
             const conn = connDB.payload;
 
-            conn.query("SELECT * FROM products").then(result => {
+            conn.query("SELECT * FROM products ORDER BY ordination").then(result => {
                 result = result.filter(user => {
                     return !Array.isArray(user);
                 });
@@ -43,6 +43,29 @@ export function updateProduct(data) {
                 }).finally(() => {
                     conn.release();
                 });
+        }
+        catch (err) {
+            reject({ status: "ERRO", payload: err });
+        }
+    });
+}
+
+export function updateOrder(data) {
+    return new Promise((resolve, reject) => {
+        try {
+            if (connDB.status === "ERRO") {
+                reject({ status: "ERRO", payload: connDB.payload });
+            }
+
+            const conn = connDB.payload;
+
+            conn.query("UPDATE products set ordination=? where ordination=?", [data.oldOrder, data.currentOrder]).then(res => {
+                conn.query("UPDATE products set ordination=? where id=?", [data.newOrder, data.id]).then(resp => {
+                    resolve({ status: "OK", payload: resp });
+                }).finally(_ => {
+                    conn.release();
+                });
+            });
         }
         catch (err) {
             reject({ status: "ERRO", payload: err });

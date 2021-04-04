@@ -1,7 +1,7 @@
 import { Router } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import {getProducts, updateProduct} from "../dataBase/querys.js";
+import {getProducts, updateProduct, updateOrder} from "../dataBase/querys.js";
 
 const router = Router();
 
@@ -22,6 +22,17 @@ router.get("/getProducts", (req, res) => {
 router.post("/updateProduct", (req, res) => {
     if(req.body){
         updateProduct(req.body).then(result=>{
+            res.send(result.payload);
+        }).catch(err =>{
+            console.log(err);
+            res.status(503).send(err.payload);
+        })
+    }
+});
+
+router.post("/updateOrder", (req, res) => {
+    if(req.body){
+        updateOrder(req.body).then(result=>{
             res.send(result.payload);
         }).catch(err =>{
             console.log(err);
