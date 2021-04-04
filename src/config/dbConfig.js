@@ -2,7 +2,7 @@
 import mariadb from "mariadb";
 import 'dotenv/config.js';
 
-function getConnection() {
+async function getConnection() {
     return new Promise((resolve, reject) => {
         try {
             const pool = mariadb.createPool({
@@ -12,10 +12,11 @@ function getConnection() {
                 password: process.env.SQL_PASS,
                 database: process.env.SQL_DB_NAME
             });
-            console.log("pediu");
             pool.getConnection().then(conn => {
+                console.log("Conexão com o DB feita!");
                 resolve({ status: "OK", payload: conn });
             }).catch(err => {
+                console.log("Problema com a conexão com o DB!");
                 reject({ status: "ERRO", payload: err })
             });
         } catch (err) {
@@ -24,4 +25,6 @@ function getConnection() {
     })
 }
 
-export default getConnection;
+const conn = await getConnection()
+
+export default conn;
